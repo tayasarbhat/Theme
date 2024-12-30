@@ -21,6 +21,14 @@ export function TaskModal({
   onDeleteTask,
   onClose
 }: TaskModalProps) {
+  // Determine if the selected date is in the past
+  const today = new Date();
+  const isPastDate = new Date(
+    selectedDate.getFullYear(),
+    selectedDate.getMonth(),
+    selectedDate.getDate()
+  ) < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 w-full max-w-md m-4">
@@ -37,9 +45,13 @@ export function TaskModal({
         </div>
 
         <div className="space-y-4">
+          {/* Existing tasks list */}
           <div className="space-y-2">
             {tasks.map((task) => (
-              <div key={task.id} className="flex items-center justify-between bg-white/5 rounded-lg p-3">
+              <div
+                key={task.id}
+                className="flex items-center justify-between bg-white/5 rounded-lg p-3"
+              >
                 <span>{task.text}</span>
                 <button
                   onClick={() => onDeleteTask(task.id)}
@@ -51,22 +63,32 @@ export function TaskModal({
             ))}
           </div>
 
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={newTask}
-              onChange={(e) => onNewTaskChange(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && onAddTask()}
-              placeholder="New task..."
-              className="flex-1 bg-white/5 rounded-lg px-3 py-2 text-white placeholder-white/50"
-            />
-            <button
-              onClick={onAddTask}
-              className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg transition-all"
-            >
-              Add
-            </button>
-          </div>
+          {/* Only show "Add Task" input if it's not a past date */}
+          {!isPastDate && (
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newTask}
+                onChange={(e) => onNewTaskChange(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && onAddTask()}
+                placeholder="New task..."
+                className="flex-1 bg-white/5 rounded-lg px-3 py-2 text-white placeholder-white/50"
+              />
+              <button
+                onClick={onAddTask}
+                className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg transition-all"
+              >
+                Add
+              </button>
+            </div>
+          )}
+
+          {/* If it's a past date, optionally show a note */}
+          {isPastDate && (
+            <p className="text-sm text-red-300">
+              You cannot add tasks to past dates, but you can still remove them.
+            </p>
+          )}
         </div>
       </div>
     </div>
