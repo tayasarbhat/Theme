@@ -13,7 +13,13 @@ export function TimeDisplay() {
   return (
     <div className="text-center mb-6 sm:mb-8 lg:mb-10">
       <div className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-2">
-        {time.toLocaleTimeString()}
+        {/* Force 12-hour format here */}
+        {time.toLocaleTimeString('en-US', { 
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true 
+        })}
       </div>
       <div className="text-base sm:text-lg lg:text-xl opacity-80">
         {time.toLocaleDateString('en-US', { 
